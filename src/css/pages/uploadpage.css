@@ -1,0 +1,37 @@
+.upload-page  input {
+    width: 80%;
+    margin: 10px;
+    padding: 10px;
+}
+
+.upload-page-loader {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+    background-color: rgba(255, 255, 255, 0.76);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.upload-page h4 {
+    margin-bottom: 0;
+}
+.upload-product-cats button {
+    padding: 1rem;
+    outline: none;
+    border: 1px solid black;
+    margin: .5rem;
+    cursor: pointer;
+
+}
+.upload-product-cats button:hover {
+    filter: invert();
+}
+
+.upload-product-cats button.active {
+    
+    filter: invert();
+}
