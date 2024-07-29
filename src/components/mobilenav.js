@@ -5,7 +5,22 @@ import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { RightArrow } from './widgets';
 
-
+export function removeWordFromString(mainString, searchWord) {
+    if (mainString.includes(searchWord)) {
+        return mainString.replace(searchWord, '').trim();
+    } else {
+        return mainString;
+    }
+}
+export function extractLastWordAfterArrow(inputString) {
+    const arrows = inputString.split("->");
+    
+    if (arrows.length > 1) {
+        return arrows.pop();
+    } else {
+        return null; // Return null or handle the case where "->" is not found
+    }
+}
 function MobileNav ({toggleMbNav}) {
     const [ active, setActive ] = useState('')
     const [ activebtn, setActivebtn ] = useState('');
@@ -26,22 +41,7 @@ function MobileNav ({toggleMbNav}) {
             toggleMbNav()
         }, 300)
     }
-    function removeWordFromString(mainString, searchWord) {
-        if (mainString.includes(searchWord)) {
-            return mainString.replace(searchWord, '').trim();
-        } else {
-            return mainString;
-        }
-    }
-    function extractLastWordAfterArrow(inputString) {
-        const arrows = inputString.split("->");
-        
-        if (arrows.length > 1) {
-            return arrows.pop();
-        } else {
-            return null; // Return null or handle the case where "->" is not found
-        }
-    }
+    
     const toggleMenus = (word) => {
         let newWord = extractLastWordAfterArrow(word);
         if(newWord ) {

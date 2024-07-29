@@ -1,90 +1,221 @@
 import { Parallax } from 'react-parallax';
 import { InlineHeader } from '../components/widgets'
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import '../css/pages/about.css'
+import axios from 'axios';
+import { PenIcon } from '../components/widgets';
 
-function About () {
+function About() {
+    const [pageData, setPageData] = useState([]);
+    const [loader, setLoader] = useState(false);
+    const [edits, setEdits] = useState({
+        page_title: false,
+        About_us_title: false,
+        About_us_body: false,
+        our_story_title: false,
+        our_story_body: false,
+        our_team_title: false,
+
+    });
+
+    const getAllData = async () => {
+        try {
+            const response = await axios.get('https://thehydrologist.com/api/get-page.php', {
+                params: {
+                    pageName: 'about',
+                    lang: 'eng'
+                }
+            });
+            setPageData(response.data);
+        } catch (error) {
+            console.error('Error retrieving page data:', error);
+        }
+    };
+
     useEffect(() => {
-        window.scrollTo(0,0);
-    },[]);
+        window.scrollTo(0, 0);
+        getAllData();
+    }, []);
+    const HandleEditToggler = (name) => {
+        /*    let newToggler = edits;
+   
+           newToggler[`${name}`] = !edits[`${name}`];
+           setEdits({ ...newToggler })
+           console.log(edits[`${name}`]) */
+
+        setEdits((prevState) => {
+            const updatedState = { ...prevState, [name]: !prevState[name] };
+            return updatedState;
+        });
+
+    }
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setPageData((prevValues) => ({
+            ...prevValues,
+            [name]: value,
+        }));
+    };
+
+
+
+
+
+    const handElementSubmit = (name) => {
+        setLoader(true);
+        HandleEditToggler(name);
+        let jsonStringified = JSON.stringify(pageData);
+        const formData = new FormData();
+        formData.append('pageName', 'about');
+        formData.append('lang', 'eng');       // Replace with the actual page name
+        formData.append('pageContent', jsonStringified);
+
+
+        axios.post('https://thehydrologist.com/api/update-pages.php', formData)
+            .then(response => {
+                console.log(response.data);
+                setLoader(false);
+                getAllData();
+            })
+            .catch(error => {
+
+                console.error('Error:', error);
+
+            });
+    }
+
+    useEffect(() => {
+        console.log(pageData)
+    }, [pageData])
     return (
-        <div className='about'>
-            <InlineHeader title='Who We Are' />
+        <div className='about' style={{ position: 'relative' }}>
+            {loader && <div className='upload-page-loader' style={{ position: 'absolute' }}>
+                <div class="spinner-loader"></div>
+            </div>}
+            <InlineHeader title={pageData?.page_title} DontshowTitle={edits.page_title} >
+                {edits.page_title && <input value={pageData?.page_title}name='page_title' onChange={handleInputChange}/>}
+                {edits.page_title &&<button  onClick={() => handElementSubmit("page_title")}>submit</button> }
+                <button style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }} onClick={() => handElementSubmit("page_title")}>
+                    edit <PenIcon size={21} />
+                </button>
+            </InlineHeader>
             <Parallax
                 bgImageSizes='cover'
                 bgImage={require('../assets/backgrounds/1-about-us-.jpg')}
                 bgImageAlt="the dog"
                 strength={-200}
-                
-             
+
+
             >
                 <div className='darken-bg'></div>
-                <div style={{height: '70vh', width: '100%'}} />
+                <div style={{ height: '70vh', width: '100%' }} />
 
-                
+
             </Parallax>
             <Parallax
-               
+
                 bgImage={require('../assets/backgrounds/2-about-us.jpg')}
                 bgImageAlt="the dog"
                 strength={-200}
             >
-                <div className='about-section'>
-                <div className='darken-bg'></div>
-                    <h2>About Us</h2>
-                    <p>About Us
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                <div className='about-section' >
+                    <div className='darken-bg'></div>
+                    {edits.About_us_title ? (
+                        <div style={{ position: 'relative', zIndex: 100 }}>
+                            <input onChange={handleInputChange} name='About_us_title' value={pageData?.About_us_title} />
 
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur</p>
+                            <button onClick={() => handElementSubmit("About_us_title")}>Submit</button>
+                        </div>
+                    ) : (
+                        <h2 onClick={() => HandleEditToggler("About_us_title")} style={{ cursor: 'pointer' }}>
+                            {pageData?.About_us_title} <PenIcon size={24} />
+                        </h2>
+                    )}
+                    {edits.About_us_body ? (
+                        <div style={{ position: 'relative', zIndex: 100 }}>
+                            <textarea name='About_us_body' onChange={handleInputChange} value={pageData?.About_us_body} style={{ width: '500px', height: 100, margin: 10 }} > </textarea>
+                            <button onClick={() => handElementSubmit("About_us_body")} style={{ width: '100%' }} >Submit</button>
+                        </div>
+                    ) : (
+                        <p onClick={() => HandleEditToggler("About_us_body")} style={{ cursor: 'pointer' }}>
+                            {pageData?.About_us_body} <PenIcon size={24} />
+                        </p>
+                    )}
+
+
+
                 </div>
             </Parallax>
             <Parallax
-               
+
                 bgImage={require('../assets/backgrounds/3-about-us.jpg')}
                 bgImageAlt="the dog"
                 strength={-200}
             >
                 <div className='about-section'>
-                <div className='darken-bg'></div>
-                    <h2>Our Story</h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    <div className='darken-bg'></div>
 
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+                    {edits.our_story_title ? (
+                        <div style={{ position: 'relative', zIndex: 100 }}>
+                            <input name='our_story_title' onChange={handleInputChange} value={pageData?.our_story_title} />
+                            <button onClick={() => handElementSubmit("our_story_title")}>Submit</button>
+                        </div>
+                    ) : (
+                        <h2 onClick={() => HandleEditToggler("our_story_title")} style={{ cursor: 'pointer' }}>
+                            {pageData?.our_story_title} <PenIcon size={24} />
+                        </h2>
+                    )}
+
+
+
+                    {edits.our_story_body ? (
+                        <div style={{ position: 'relative', zIndex: 100 }}>
+                            <textarea onChange={handleInputChange} name='our_story_body' value={pageData?.our_story_body} style={{ width: '500px', height: 100, margin: 10 }} > </textarea>
+                            <button onClick={() => handElementSubmit("our_story_body")} style={{ width: '100%' }} >Submit</button>
+                        </div>
+                    ) : (
+                        <p onClick={() => HandleEditToggler("our_story_body")} style={{ cursor: 'pointer' }}>
+                            {pageData?.our_story_body} <PenIcon size={24} />
+                        </p>
+                    )}
+
                 </div>
             </Parallax>
             <Parallax
-              
+
                 bgImage={require('../assets/backgrounds/4-about-us.jpg')}
                 bgImageAlt="the dog"
                 strength={-200}
             >
                 <div className='about-section'>
-                <div className='darken-bg'></div>
-                <h2>Our Team</h2>
-                <div className='about-team'>
-                    <div>
-                        <img  src='https://woocommerce-815504-2799229.cloudwaysapps.com/wp-content/uploads/2021/10/image-box-10-1.jpg'/>
-                        <h4>Summer Collection</h4>
-                        <p>Officia ut cupidatat ullamco qui nisi nostrud commodo in laborum. Exercitation quis magna nostrud et cillum exercitation qui ipsum quis ullamco esse. Labore quis excepteur anim qui do mollit esse laborum anim consectetur officia consequat minim labore. Laborum ullamco amet nisi ea non.
+                    <div className='darken-bg'></div>
+                   
+                    {edits.our_team_title ? (
+                        <div style={{ position: 'relative', zIndex: 100 }}>
+                            <input onChange={handleInputChange} name='our_team_title' value={pageData?.our_team_title} />
 
- nostrud cillum consequat amet amet. Mollit laboris excepteur ad labore Lorem sit.</p>
-                    </div>
-                    <div>
-                        <img  src='https://woocommerce-815504-2799229.cloudwaysapps.com/wp-content/uploads/2021/10/image-box-10-1.jpg'/>
-                        <h4>Summer Collection</h4>
-                        <p>Officia ut cupidatat ullamco qui nisi nostrud commodo in laborum. Exercitation quis magna nostrud et cillum exercitation qui ipsum quis ullamco esse. Labore quis excepteur anim qui do mollit esse laborum anim consectetur officia consequat minim labore. Laborum ullamco amet nisi ea non.
+                            <button onClick={() => handElementSubmit("our_team_title")}>Submit</button>
+                        </div>
+                    ) : (
+                        <h2 onClick={() => HandleEditToggler("our_team_title")} style={{ cursor: 'pointer' }}>
+                            {pageData?.our_team_title} <PenIcon size={24} />
+                        </h2>
+                    )}
 
-dipisicing nisi uat amet amet. Mollit laboris excepteur ad labore Lorem sit.</p>
-                    </div>
-                    <div>
-                        <img  src='https://woocommerce-815504-2799229.cloudwaysapps.com/wp-content/uploads/2021/10/image-box-10-1.jpg'/>
-                        <h4>Summer Collection</h4>
-                        <p>Officia ut cupidatat ullamco qui nisi nostrud commodo in laborum. Exercitation quis magna nostrud et cillum exercitation qui ipsum quis ullamco esse. Labore quis excepteur anim qui do mollit esse laborum anim consectetur officia consequat minim labore. Laborum ullamco amet nisi ea non.
+                    <div className='about-team'>
+                        {pageData?.our_team?.map((item, index) => {
+                            return (
+                                <div key={index}>
+                                    <img src={item.pic} />
+                                    <h4>{item.name} </h4>
+                                    <p>{item.position}</p>
+                                </div>
 
-Eu upidatat sit trud cillum consequat amet amet. Mollit laboris excepteur ad labore Lorem sit.</p>
+                            )
+                        })}
+
+
                     </div>
-                    
-                </div>
 
                 </div>
             </Parallax>

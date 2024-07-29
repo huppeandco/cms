@@ -11,8 +11,11 @@ import { SotreProducts2, SotreProducts3} from '../data';
 import axios from 'axios';
 import { useInView } from 'react-intersection-observer';
 import SkeletonLoader from './skeleton-loader';
+import { LoaderTemplate } from './skeleton-loader';
+
 const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
 const apiUrl = 'https://thehydrologist.com/get-products.php'
+
 export const sotreProducts = 
 [
     {priece: 'AED 204.51', name: 'Nooma (Copy)', image: 'https://imagedelivery.net/pPmcWI57Uxy-_rb5sInlGg/ede84e25-b281-47ea-e73d-a29bb8468d00/public', rating: 5, quantity: 1, desc: 'loream', },
@@ -74,7 +77,7 @@ const StarRating = ({ number }) => {
   
     return <div>{renderStars()}</div>;
   };
-export function ProductItem ({name, image, rating, priece, quantity, price}) {
+export function ProductItem ({name, image, rating, priece, quantity, price, id}) {
   let context =  useContext(DataContext);
   const cart =  context.cart;
   const updateCart = context.handleCart;
@@ -91,6 +94,8 @@ export function ProductItem ({name, image, rating, priece, quantity, price}) {
     setImageLoaded(true);
     
   }
+
+  
   return (
     <div key={name} className='product-wrapper'>
                             <div className='image-wrapper'>
@@ -105,7 +110,7 @@ export function ProductItem ({name, image, rating, priece, quantity, price}) {
                                  </div>
                                  <Slide bottom>
                                   <div  className={`product_img-container ${imageLoaded ? 'loaded' : ''}`}>
-                                    <Link to={`/product?name=${name}&&img=${image}&&priece=${priece || price}&&quantity=${quantity}`}>
+                                    <Link to={`/product?name=${name}&&img=${image}&&priece=${priece || price}&&quantity=${quantity}&&id=${id}`}>
                                       <img src={image} onLoad={handleImgLoad} />
                                       <div className='img-skeleton' /> 
                                       
@@ -125,11 +130,13 @@ export function ProductItem ({name, image, rating, priece, quantity, price}) {
     <ShoppingCart size={35}  />
     </div> */
 export function Store ({productsData}) {
+ 
   return (
     <div className='products-container'>
-                {productsData.map((product) => {
+                {productsData?.map((product) => {
+                  console.log("this is the prduct", product)
                     return (
-                        <ProductItem name={product.name} image={product.image} rating={product.rating} priece={product?.priece} price={product?.price}  quantity={product.quantity}/>
+                        <ProductItem name={product.name} image={product.image} rating={product.rating} priece={product?.priece} price={product?.price}  quantity={product.quantity} id={product?.id}/>
                     )
                 })}
 
@@ -142,14 +149,15 @@ function HomeStore () {
     const [ data, setData ] = useState(sotreProducts);
     const [ref, inView ] = useInView();
 
-    const [products, setProducts] = useState([]);
 
+    const [products, setProducts] = useState([]);
+   
 
     useEffect(() => {
       async function fetchProducts() {
         try {
-          const response = await axios.get('https://thehydrologist.com/get-products.php');
-          const allProducts = response.data;
+          const response = await axios.get('https://thehydrologist.com/api/get-products.php');
+          const allProducts = response?.data || []; 
           return allProducts;
         } catch (error) {
           throw error;
@@ -184,20 +192,26 @@ function HomeStore () {
                 more <DownArrow size={30} color={"#b4b4b4"} transform='translateY(6px)'/>
               </button>
               <ul>
-                <li>
-                  <button>BEST SELLERS</button>
+                <li onClick={() => { setActiveTap('best_seller'); setData(sotreProducts)}}>
+                  <button >BEST SELLERS</button>
                 </li>
                 <li>
-                  <button>NEW ARRIVALS</button>
+                  <button onClick={() => {setActiveTap('new_arrivals'); setData(SotreProducts2)}}>NEW ARRIVALS</button>
                 </li>
                 <li>
-                  <button>EXECUTIVE LOUNGE</button>
+                  <button onClick={() => {setActiveTap('exective_lounge'); setData(SotreProducts3)}}>EXECUTIVE LOUNGE</button>
                 </li>
               </ul>
             </div>
             </div>
-            <div ref={ref}></div>
-            { products.length > 0 ? <Store productsData={data} />: <SkeletonLoader />}
+            
+            { products?.length > 0 ? <Store productsData={data} />: 
+            <div ref={ref} style={{width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap'}}>
+              {Array.from({ length: 10 }, (_, index) => (
+                  <LoaderTemplate key={index} />
+              ))}
+        </div>
+        }
             
                 <a>Shope all products</a>
         </div>

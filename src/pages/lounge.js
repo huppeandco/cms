@@ -3,11 +3,12 @@ import { DefaulBtn, InlineHeader } from "../components/widgets";
 import '../css/pages/lounge.css';
 
 
-export function InlineBanner ({noBtn}) {
+export function InlineBanner ({noBtn, img, text, btnText, children}) {
     return (
-        <div style={{backgroundImage: "url('https://tearappy.com/wp-content/uploads/2022/08/Banner_1.png')"}} className="lounge-banner">
-                <h1>Welcome To Your Executive Lounge</h1>
-                {noBtn ? '' : <DefaulBtn title="Shope Now" noCap /> }
+        <div style={{backgroundImage:  `url('${img}')`}} className="lounge-banner">
+                {children}
+                <h1>{text}</h1>
+                {noBtn ? '' : <DefaulBtn title={btnText} noCap /> }
            </div>
     )
 }

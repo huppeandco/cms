@@ -1,4 +1,4 @@
-function LoaderTemplate () {
+export function LoaderTemplate () {
     return (
         <div className="skeleton-loader">
             <div className="img"></div>

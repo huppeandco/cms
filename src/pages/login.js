@@ -35,7 +35,7 @@ function Login () {
         e.preventDefault();
         async function fetchUser() {
             try {
-              const response = await axios.post('https://thehydrologist.com/api/auth-user.php', {
+              const response = await axios.post('https://thehydrologist.com/api/auth-user-token.php', {
                 username: values.usrName,
                 password: values.password
               });
@@ -57,6 +57,10 @@ function Login () {
           fetchUser();
         
     }
+
+    useEffect(() => {
+      window.scrollTo(0,0);
+    }, [])
     return (
         <div className='login'>
             {loader && <div className='upload-page-loader' > 

@@ -25,6 +25,7 @@
     align-items: center;
     justify-content: center;
     max-width: 400px;
+    position: relative;
 }
 
 .product_btn-container {
@@ -44,8 +45,40 @@
     padding-left: 70px;
 
 }
+.delete-btn {
+    padding: .5rem;
+    background-color: red;
+    border: 1px solid black;
+    outline: none;
+ 
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .1s linear;
+}
 
-.product-txt-view p, .product-txt-view h4, .product-txt-view h1 {
+.delete-btn:hover {
+    transform: scale(1.05) translateY(5px);
+    
+}
+ 
+
+.product-txt-view  input {
+    width: 100%;
+    padding: .5rem;
+    font-size: 21px;
+    border: none;
+    border-bottom: 1px solid black;
+    margin-block: 2rem;
+    margin-top: 0;
+
+}
+.product-txt-view textarea {
+    width: 100%;
+    padding: .5rem;
+}
+
+.product-txt-view p, .product-txt-view h4, .product-txt-view h1,.product-txt-view input  {
     text-align: left;
     line-height: 1.7rem;
     color: #3b3b3b;

@@ -1,0 +1,29 @@
+.page_edit-container {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    margin-left: 80px;
+}
+.page_edit-container > div {
+    display: flex;
+    align-items: center;
+
+}
+
+.page_edit-container > div > h2 {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 400;
+    padding: 8px;
+    text-align: left;
+}
+.page_edit-container > div > input {
+    flex: 5;
+    padding: 8px;
+    border: none;
+    border-bottom: 1px solid #696969; 
+}
+.page_edit-container > div > textarea {
+    padding: 8px;
+    flex: 5;
+}

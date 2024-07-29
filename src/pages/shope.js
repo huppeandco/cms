@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import {sotreProducts } from '../components/store';
 import axios from 'axios';
 import SkeletonLoader from "../components/skeleton-loader";
-const apiUrl = 'https://thehydrologist.com/get-products.php'
+const apiUrl = 'https://api.thehydrologist.com/get-all-products.php'
 
 function Shope () {
     const [currentPage, setCurrentPage] = useState(1);

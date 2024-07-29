@@ -12,24 +12,37 @@ import { Swiper, SwiperSlide  } from 'swiper/react';
 import Eu from '../assets/currency/eu.svg';
 import Uae from '../assets/currency/ae.svg';
 import Us from '../assets/currency/us.svg';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ar from '../assets/langs/ar.svg';
 import eng from '../assets/langs/en.svg';
 import fr from '../assets/langs/fr.svg';
 import ru from '../assets/langs/ru.svg';
 import es from '../assets/langs/es.svg';
 import 'swiper/css';
+import { useContext } from 'react';
+import { LangContext } from '../data/lang';
 
-export function FywWidget () {
+export function FywWidget ({toggleEditModal, fywData}) {
+
+    const handleEdit = () => {
+        let content = {
+            title: 'banner',
+            content: 'label x'
+        }
+        toggleEditModal(content, 'fyw')
+    }
     return (
         <div className='fyw-widget'>
-            <div className='fyw-container' style={{backgroundImage:`url(${imageOne})`}}>
+            <div className='fyw-container' style={{backgroundImage:`url(${fywData?.bg})`}}>
+            <div style={{alignSelf: 'flex-end', cursor: 'pointer'}} onClick={handleEdit}>
+                <EditIcon />
+            </div>
             <Fade bottom duration={1000}>
             <WaterBottle width='60px' height='60px' />
             </Fade>
             <Slide bottom duration={1000}>
-            <h4>FIND YOUR WATER </h4>
-            <p>Personalize your drinking exprience </p>
+            <h4>{fywData?.title}</h4>
+            <p>{fywData?.text} </p>
             </Slide>
             <Slide left duration={1000}>
             <a>TRY NOW</a>
@@ -106,21 +119,33 @@ export function NumberView () {
                     <img  src={image1} /> 
                     <NumberPlus start={start} value={100} size='big' color='#9EE5C5' plus={true} />
                     <p>WIDERANGE OF PRODUCTS</p>
+                    <div style={{cursor: 'pointer'}}>
+                        <PenIcon size="21px" />
+                    </div>
                 </div>
                 <div className='number_view-element'>
                     <img  src={image2} /> 
                     <NumberPlus start={start} value={60} size='big' color='#9EE5C5' plus={true} />
                     <p>ASSOCIATED BRANDS</p>
+                    <div style={{cursor: 'pointer'}}>
+                        <PenIcon size="21px" />
+                    </div>
                 </div>
                 <div className='number_view-element'>
                     <img  src={image3} /> 
                     <NumberPlus start={start} value={456} size='big' color='#9EE5C5' plus={false} />
                     <p>UNITS SHIPPED</p>
+                    <div style={{cursor: 'pointer'}}>
+                        <PenIcon size="21px" />
+                    </div>
                 </div>
                 <div className='number_view-element'>
                     <img src={image4} /> 
                     <NumberPlus start={start} value={30} size='big' color='#9EE5C5' plus={false} />
                     <p>PLASTIC BOTTLE</p>
+                    <div style={{cursor: 'pointer'}}>
+                        <PenIcon size="21px" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -192,7 +217,7 @@ export function NumberView () {
 } */
 
 
-export const Testimonial = ({ items }) => {
+export const Testimonial = ({ items, toggleEditModal, txtData  }) => {
  
   const testi = [
     {testi: 'Amazing product. The results are so transformative in texture and my face feels plump and healthy.', name: 'KATHLEEN LEE'},
@@ -203,12 +228,24 @@ export const Testimonial = ({ items }) => {
 ]
 
 
-  
+const handleEdit = () => {
+    let content = {
+        title: 'testimonial',
+        content: 'label x'
+    }
+    toggleEditModal(content, 'testimonials')
+    
+}
+
+
   
   return (
     <div className='testimonial'>
          <h4> TESTIMONIALS </h4>
-        <div>
+        <div style={{position: 'relative'}}>
+        <div style={{position: 'absolute', top: 20, right: 20, zIndex: 18, cursor: 'pointer'}} onClick={handleEdit}>
+                <EditIcon size={50}  />
+        </div>
         <Swiper 
             modules={[Navigation, Pagination, Scrollbar, A11y]}
             spaceBetween={50}
@@ -218,14 +255,14 @@ export const Testimonial = ({ items }) => {
             pagination={{ clickable: true }}
             autoplay
             >
-        {testi.map((item, index) => (
+        {txtData?.map((item, index) => (
             <SwiperSlide key={index}>
-            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-                <img src='https://woocommerce-815504-2799229.cloudwaysapps.com/wp-content/uploads/2021/11/testimonial-12-1.png' />
-                <p style={{maxWidth: '600px', alignSelf: 'center'}}> ‟ {item.testi} “</p>
-            
-                <p>{item.name}</p>
-            </div>
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                    <img src='https://woocommerce-815504-2799229.cloudwaysapps.com/wp-content/uploads/2021/11/testimonial-12-1.png' />
+                    <p style={{maxWidth: '600px', alignSelf: 'center'}}> ‟ {item.title} “</p>
+                
+                    <p>{item.author}</p>
+                </div>
             </SwiperSlide>
         ))}
         {/*  <div className="swiper-button-next"><span style={{fontSize: '4rem'}}>→</span></div>
@@ -241,13 +278,19 @@ export const Testimonial = ({ items }) => {
 
 
 
-export function InsightsComponent ({data, title}) {
-
+export function InsightsComponent ({data, title, toggleEditModal}) {
+    const handleEdit = () => {
+        let content = {
+            title: 'Swiper',
+            content: 'label x'
+        }
+        toggleEditModal(content, 'insights')
+    }
     return (
         <div className='insights'>
             {title ? (<h2>{title}</h2>) : (<></>)}
             <div className='insights_wrapper'>
-                {data.map((element, index) => {
+                {data?.map((element, index) => {
                     return(
                         <div className='insight-element' key={index}> 
                             {/* <a><div  className='flare' style={{ backgroundImage: `url('${element.img}')`, width: '300px', height: '300px', backgroundPosition: 'center center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}></div></a> */}
@@ -263,15 +306,19 @@ export function InsightsComponent ({data, title}) {
                         </div>
                     )
                 })}
+                <div onClick={handleEdit} style={{position: 'absolute', bottom: '30%', right: "30%", cursor: 'pointer'}}>
+                    <AddIcon />
+                </div>
             </div>
         </div>
     )
 }
 
-export function InlineHeader ({title}) {
+export function InlineHeader ({title, children, DontshowTitle}) {
     return (
         <div style={{width: '100%', height: '90px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#0693e3', paddingBlock: '2rem'}}>
-            <h1 style={{ fontSize: '2.5rem', color: 'white', fontWeight: 'lighter'}}>{title}</h1>
+            {!DontshowTitle && <h1 style={{ fontSize: '2.5rem', color: 'white', fontWeight: 'lighter'}}>{title}</h1>}
+            {children}
         </div>
     )
 }
@@ -397,11 +444,12 @@ export function DefaulBtn ({title, noCap, styles, secondary, onpress}) {
     )
 }
 
-export function OfferComponent ({title, desc, type, footer, priece, image, limited, dark }) {
-   
-    return (
+export function OfferComponent ({title, desc, type, footer, priece, image, limited, dark, id }) {
+   const navigation = useNavigate();
+    return ( 
         <Fade bottom>
-        <div className='offer-wrapper'>
+            <Link to={`/updateoffer?id=${id}&title=${title}&desc=${desc}&type=${type}&footer=${footer}&priece=${priece}&image=${image}&limited=${limited}&dark={dark}`}>
+        <div className='offer-wrapper' >
             <div className='bg-img' style={{backgroundImage:`url(${image})`}}></div>
             <div className='offer-txt' >
             {limited ? <h5> limited offer</h5> : <></>}
@@ -415,6 +463,7 @@ export function OfferComponent ({title, desc, type, footer, priece, image, limit
                 </div>
             </div>
         </div>
+        </Link>
         </Fade>
     )
 }
@@ -486,6 +535,14 @@ export function CurrencySelector () {
 export function SkeletonTxtLoader () {
     return (
         <div className='skeleton-txt-loader'>
+            <div></div>
+            <div></div>
+        </div>
+    )
+}
+export function SkeletonEditLoader () {
+    return (
+        <div className='skeleton-edit-loader'>
             <div></div>
             <div></div>
         </div>
@@ -593,6 +650,7 @@ export function LoginIcon () {
 
 
 export function Langs () {
+    const setAppLang = useContext(LangContext).setLang;
     const [ active, setActive ] = useState(false);
     const [lang, setLang ] = useState('English');
     const [flag, setFlag ] = useState(eng);
@@ -608,7 +666,7 @@ export function Langs () {
                 </div>
             </li>
             <li>
-                <div onClick={() => {setLang('french'); setFlag(fr); setActive(false)}}>
+                <div onClick={() => {setLang('french'); setFlag(fr); setActive(false); setAppLang('fr')}}>
                 <img src={fr} /> 
                 <p>french</p>
                 </div>
@@ -625,6 +683,12 @@ export function Langs () {
                 <p>Espain</p> 
                 </div>
             </li>
+            <li>
+                <div onClick={() => {setLang('English'); setFlag(eng); setActive(false); setAppLang('eng')}}>
+                <img src={eng} />
+                <p>Espain</p> 
+                </div>
+            </li>
            </ul>
             <div onClick={() => setActive(!active)}> 
                 <p>{lang}</p>
@@ -633,5 +697,34 @@ export function Langs () {
             
             
         </div>
+    )
+}
+
+
+export function EditIcon ({color, size}) {
+    return (
+        <svg  width={size || "64px"} height={size || "64px"} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M21.2799 6.40005L11.7399 15.94C10.7899 16.89 7.96987 17.33 7.33987 16.7C6.70987 16.07 7.13987 13.25 8.08987 12.3L17.6399 2.75002C17.8754 2.49308 18.1605 2.28654 18.4781 2.14284C18.7956 1.99914 19.139 1.92124 19.4875 1.9139C19.8359 1.90657 20.1823 1.96991 20.5056 2.10012C20.8289 2.23033 21.1225 2.42473 21.3686 2.67153C21.6147 2.91833 21.8083 3.21243 21.9376 3.53609C22.0669 3.85976 22.1294 4.20626 22.1211 4.55471C22.1128 4.90316 22.0339 5.24635 21.8894 5.5635C21.7448 5.88065 21.5375 6.16524 21.2799 6.40005V6.40005Z" stroke={color || "#9e9e9e"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M11 4H6C4.93913 4 3.92178 4.42142 3.17163 5.17157C2.42149 5.92172 2 6.93913 2 8V18C2 19.0609 2.42149 20.0783 3.17163 20.8284C3.92178 21.5786 4.93913 22 6 22H17C19.21 22 20 20.2 20 18V13" stroke={color || "#9e9e9e"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
+       
+    )
+}
+
+export function AddIcon () {
+    return (
+        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#8c8c8c"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> <path d="M7 3.33782C8.47087 2.48697 10.1786 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 10.1786 2.48697 8.47087 3.33782 7" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"></path> </g></svg>
+    )
+}
+
+
+
+export function PenIcon ({size, onPress}) {
+    return (
+        <svg onClick={onPress} width={size ||"64px"} height={size ||"64px"} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M20.1497 7.93997L8.27971 19.81C7.21971 20.88 4.04971 21.3699 3.27971 20.6599C2.50971 19.9499 3.06969 16.78 4.12969 15.71L15.9997 3.84C16.5478 3.31801 17.2783 3.03097 18.0351 3.04019C18.7919 3.04942 19.5151 3.35418 20.0503 3.88938C20.5855 4.42457 20.8903 5.14781 20.8995 5.90463C20.9088 6.66146 20.6217 7.39189 20.0997 7.93997H20.1497Z" stroke="#616161" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M21 21H12" stroke="#616161" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+    )
+}
+
+
+export function DeleteIcon () {
+    return (
+        <svg fill="#878787" width="64px" height="64px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#878787"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M20,7H12.309a.5.5,0,0,1-.447-.276L10.276,3.553A1,1,0,0,0,9.382,3H4A1,1,0,0,0,3,4V20a1,1,0,0,0,1,1H20a1,1,0,0,0,1-1V8A1,1,0,0,0,20,7Zm-4.793,8.793a1,1,0,1,1-1.414,1.414L12,15.414l-1.793,1.793a1,1,0,0,1-1.414-1.414L10.586,14,8.793,12.207a1,1,0,0,1,1.414-1.414L12,12.586l1.793-1.793a1,1,0,0,1,1.414,1.414L13.414,14Z"></path></g></svg>
     )
 }

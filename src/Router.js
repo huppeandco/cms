@@ -24,6 +24,10 @@ import FindMyWater from './pages/findmywater';
 import Uploadproduct from './pages/uploadproduct';
 import { useEffect, useState } from 'react';
 import FlashScreen from './components/flashscreen';
+import UpdateOffer from './pages/updateoffer';
+import Dashboard from './dashboard';
+import CsvFileReader from './components/cvsReader';
+
 
 function Router ({data, location}) {
     const [showFlashScreen, setShowFlashScreen] = useState(true);
@@ -34,7 +38,7 @@ function Router ({data, location}) {
         setShowFlashScreen(true);
         const timeout = setTimeout(() => {
           setShowFlashScreen(false);
-        }, 500);
+        }, 1000);
     
         return () => clearTimeout(timeout);
       }, [location]);
@@ -42,31 +46,35 @@ function Router ({data, location}) {
         <>
          {showFlashScreen && <FlashScreen />}
         <TransitionGroup component={null}>
-        <CSSTransition key={location.key} timeout={250} classNames="fade">
+        <CSSTransition timeout={250} classNames="fade">
         <Routes>
            
-            <Route path="/" element={<Home data={data} />} />
-            <Route path="/shope" element={<Shope  />} />
-            <Route path="/insights" element={<Insights data={data} />} />
-            <Route path="/offers" element={<Offers /> } />
-            <Route path="/about" element={<About />} />
-            <Route path="/water" element={<Water />} />
-            <Route path="/lounge" element={<Lounge />} />
-            <Route path="/brands" element={<Brands />} />
-            <Route path="/affiliate" element={<Affiliate />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/recycling" element={<Recycling />} />
-            <Route path="/program" element={<Program />} />
-            <Route path="/sitemap" element={<SiteMap />} />
-            <Route path="/faqs" element={<FAQS />} />
-            <Route path="/carear" element={<Carear />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/products" element={<Products />} />
+            <Route  path="/" element={<Dashboard data={data}  />} />
+            <Route  path="/:fab" element={<Dashboard data={data}  />} />
+            <Route  path="/pages/home" element={<Home data={data}  />} />
+            <Route path="/pages/shope" element={<Shope  />} />
+            <Route path="/pages/insights" element={<Insights data={data} />} />
+            <Route path="/pages/offers" element={<Offers /> } />
+            <Route path="/pages/about" element={<About />} />
+            <Route path="/pages/water" element={<Water />} />
+            <Route path="/pages/lounge" element={<Lounge />} />
+            <Route path="/pages/brands" element={<Brands />} />
+            <Route path="/pages/affiliate" element={<Affiliate />} />
+            <Route path="/pages/contact" element={<Contact />} />
+            <Route path="/pages/recycling" element={<Recycling />} />
+            <Route path="/pages/program" element={<Program />} />
+            <Route path="/pages/sitemap" element={<SiteMap />} />
+            <Route path="/pages/faqs" element={<FAQS />} />
+            <Route path="/pages/carear" element={<Carear />} />
+            <Route path="/pages/login" element={<Login />} />
+            <Route path="/pages/products" element={<Products />} />
             <Route path="/product" element={<Product />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path='/insight/:id' element={<Insight />} />
-            <Route path='/fmy' element={<FindMyWater />} />
-            <Route path='/uploadProduct' element={<Uploadproduct />} />
+            <Route path="/cvs" element={<CsvFileReader />} />
+            <Route path="/pages/cart" element={<Cart />} />
+            <Route path='/pages/insight/:id' element={<Insight />} />
+            <Route path='/pages/fmy' element={<FindMyWater />} />
+            <Route path='/pages/uploadProduct' element={<Uploadproduct />} />
+            <Route path='/pages/updateoffer' element={<UpdateOffer />} />
         </Routes>
         </CSSTransition>
       </TransitionGroup>

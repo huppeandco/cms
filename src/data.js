@@ -1,5 +1,7 @@
-import React, { createContext, useContext, useState } from 'react';
-
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { getDatabase, ref, set, onValue } from "firebase/database";
+import {getAuth } from "firebase/auth";
+import * as Firebase from 'firebase/app';
 
 import Image9 from './assets/shelf/youngster/wildnap-baby.png'
 import Image10 from './assets/shelf/youngster/zevia-kidz.png'
@@ -22,6 +24,8 @@ import Image25 from './assets/shelf/gensiswell/lamate.png';
 
 
 // Create the context
+
+
 export const DataContext = createContext();
 
 export const SotreProducts2 = 
@@ -49,22 +53,55 @@ export  const SotreProducts3 =
 
 ];
 const password = '414km3mJNR2343MMAF000035124';
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCNsRzq9TtbeZh7JbKhegAK-SiMcUAidvk",
+  authDomain: "the-hydrologist.firebaseapp.com",
+  databaseURL: "https://the-hydrologist-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "the-hydrologist",
+  storageBucket: "the-hydrologist.appspot.com",
+  messagingSenderId: "328001240346",
+  appId: "1:328001240346:web:7c6215b8788f123f1240a3",
+  measurementId: "G-HYLZVMN0ZB"
+};
+
+const app = Firebase.initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase();
+
+const getOrders = async (status) => {
+  return new Promise((resolve, reject) => {
+    const starCountRef = ref(db, `orders/${status}`);
+    onValue(starCountRef, (snapshot) => {
+      const data = snapshot.val();
+      resolve(data);
+    }, (error) => {
+      reject(error);
+    });
+  });
+};
+
 const DataProvider = ({ children }) => {
     const [data, setData] = useState('');
     const [nav, setNav] = useState('home');
-    const [passCode, setPassCode ] = useState('414km3mJNR2343MMAF000035124');
+    const [passCode, setPassCode ] = useState(true);
     const [login, setLogin ] = useState(false)
     const [usrID, setUsrID ] = useState(null);
-
+    const [AlertMsg, setAlertMsg ] = useState({visible: false,title: '', content: ''});
+    const [name, setName ] = useState('');
+    
+      
     const [cart, setCart ] = useState([
     ]);
     const [insights, setInsights ] = useState([
-      {id: 1, url: '/insight/:1', header: 'The hydrologist unique Products', ftxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.', quote: 'I try as much as possible to give you a great basic product and what comes out, I feel, is really amazing.', stxt: 'If I fell in love with a woman for an artistic reason, or from the point of view of my work, I think it would rob her of something. We live in an era of globalization and the era of the woman. Never in the history of the world have women been more in control of their destiny.', stitle: 'Your imagination, our creation', ttxt: 'Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin. Made using clean, non-toxic ingredients, our products are designed for everyone…', ltxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.', aurther: 'Jeff', date: '2-2-223', img: 'https://woocommerce-815504-2799229.cloudwaysapps.com/wp-content/uploads/2021/10/blog-4.webp'},
-      {id: 2,  url: '/insight/:2', header: 'CANADA WATER BRAND LAUNCHING IN UAE',  ftxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.',quote: 'I try as much as possible to give you a great basic product and what comes out, I feel, is really amazing.', stxt: 'If I fell in love with a woman for an artistic reason, or from the point of view of my work, I think it would rob her of something. We live in an era of globalization and the era of the woman. Never in the history of the world have women been more in control of their destiny.',  stitle: 'Your imagination, our creation', ttxt: 'Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin. Made using clean, non-toxic ingredients, our products are designed for everyone…      ',   ltxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.', aurther: 'Jeff',date: '2-2-223', img: 'https://woocommerce-815504-2799229.cloudwaysapps.com/wp-content/uploads/2021/10/blog-3.webp' },
-      {id: 3,url: '/insight/:3', header: 'SALACIOUS DRINKS – ONLINE BOTTLED WATER BOUTIQUE ',  ftxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.',quote: 'I try as much as possible to give you a great basic product and what comes out, I feel, is really amazing.', stxt: 'If I fell in love with a woman for an artistic reason, or from the point of view of my work, I think it would rob her of something. We live in an era of globalization and the era of the woman. Never in the history of the world have women been more in control of their destiny.',  stitle: 'Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin. Made using clean, non-toxic ingredients, our products are designed for everyone…', ttxt: 'Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin. Made using clean, non-toxic ingredients, our products are designed for everyone…',   ltxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.', aurther: 'Jeff', date: '2-2-223', img: 'https://woocommerce-815504-2799229.cloudwaysapps.com/wp-content/uploads/2021/10/blog-2.webp'  },
-      {id: 3, url: '/insight/:4', header: 'BEGINNING OF THE LUXURY WATER WAVE',  ftxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.',quote: 'I try as much as possible to give you a great basic product and what comes out, I feel, is really amazing.', stxt: 'If I fell in love with a woman for an artistic reason, or from the point of view of my work, I think it would rob her of something. We live in an era of globalization and the era of the woman. Never in the history of the world have women been more in control of their destiny.',  stitle: 'Your imagination, our creation', ttxt: 'Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin. Made using clean, non-toxic ingredients, our products are designed for everyone…',   ltxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.', aurther: 'Jeff', date: '2-2-223', img: 'https://woocommerce-815504-2799229.cloudwaysapps.com/wp-content/uploads/2021/10/blog1.webp',  },
+      {id: 1, url: '/insight/1', header: 'The hydrologisSt unique Products', ftxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.', quote: 'I try as much as possible to give you a great basic product and what comes out, I feel, is really amazing.', stxt: 'If I fell in love with a woman for an artistic reason, or from the point of view of my work, I think it would rob her of something. We live in an era of globalization and the era of the woman. Never in the history of the world have women been more in control of their destiny.', stitle: 'Your imagination, our creation', ttxt: 'Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin. Made using clean, non-toxic ingredients, our products are designed for everyone…', ltxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.', aurther: 'Jeff', date: '2-2-223', img: 'https://woocommerce-815504-2799229.cloudwaysapps.com/wp-content/uploads/2021/10/blog-4.webp'},
+      {id: 2,  url: '/insight/2', header: 'CANADA WATER BRAND LAUNCHING IN UAE',  ftxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.',quote: 'I try as much as possible to give you a great basic product and what comes out, I feel, is really amazing.', stxt: 'If I fell in love with a woman for an artistic reason, or from the point of view of my work, I think it would rob her of something. We live in an era of globalization and the era of the woman. Never in the history of the world have women been more in control of their destiny.',  stitle: 'Your imagination, our creation', ttxt: 'Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin. Made using clean, non-toxic ingredients, our products are designed for everyone…      ',   ltxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.', aurther: 'Jeff',date: '2-2-223', img: 'https://woocommerce-815504-2799229.cloudwaysapps.com/wp-content/uploads/2021/10/blog-3.webp' },
+      {id: 3,url: '/insight/3', header: 'SALACIOUS DRINKS – ONLINE BOTTLED WATER BOUTIQUE ',  ftxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.',quote: 'I try as much as possible to give you a great basic product and what comes out, I feel, is really amazing.', stxt: 'If I fell in love with a woman for an artistic reason, or from the point of view of my work, I think it would rob her of something. We live in an era of globalization and the era of the woman. Never in the history of the world have women been more in control of their destiny.',  stitle: 'Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin. Made using clean, non-toxic ingredients, our products are designed for everyone…', ttxt: 'Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin. Made using clean, non-toxic ingredients, our products are designed for everyone…',   ltxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.', aurther: 'Jeff', date: '2-2-223', img: 'https://woocommerce-815504-2799229.cloudwaysapps.com/wp-content/uploads/2021/10/blog-2.webp'  },
+      {id: 4, url: '/insight/4', header: 'BEGINNING OF THE LUXURY WATER WAVE',  ftxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.',quote: 'I try as much as possible to give you a great basic product and what comes out, I feel, is really amazing.', stxt: 'If I fell in love with a woman for an artistic reason, or from the point of view of my work, I think it would rob her of something. We live in an era of globalization and the era of the woman. Never in the history of the world have women been more in control of their destiny.',  stitle: 'Your imagination, our creation', ttxt: 'Complexion-perfecting natural foundation enriched with antioxidant-packed superfruits, vitamins, and other skin-nourishing nutrients. Creamy liquid formula sets with a pristine matte finish for soft, velvety smooth skin. Made using clean, non-toxic ingredients, our products are designed for everyone…',   ltxt: 'Awkwardness gives me great comfort. I’ve never been cool, but I’ve felt cool. I’ve been in the cool place, but I wasn’t really cool – I was trying to pass for hip or cool. It’s the awkwardness that’s nice. We look our best in subdued colors, sophisticated cuts, and a general air of sleek understatement. I like the body. I like to design everything to do with the body.', aurther: 'Jeff', date: '2-2-223', img: 'https://woocommerce-815504-2799229.cloudwaysapps.com/wp-content/uploads/2021/10/blog1.webp',  },
       
     ]);
+    const [ pageLoader, setPageLoader] = useState(false);
     const [NavIndicatorState,  setNavIndictorState ] = useState('');
 
     const handleCart = (item) => {
@@ -102,7 +139,14 @@ const DataProvider = ({ children }) => {
         setPassCode,
         setUsrID,
         login,
-        setLogin
+        setLogin,
+        pageLoader,
+        setPageLoader,
+        AlertMsg,
+        setAlertMsg,
+        name,
+        setName,
+        getOrders
       
       }}>
         {children}

@@ -9,16 +9,17 @@ import { Link, useNavigate } from 'react-router-dom';
 import { DownArrow, RightArrow } from './components/widgets'
 import { useContext } from 'react'
 import { DataContext } from './data'
+import { LangContext } from './data/lang'
 
 export default function ({toggleSearch, toggleMbNav }) {
-   
+    
     let cart = useContext(DataContext).cart;
     let handleDeleteFromCart = useContext(DataContext).handleDeleteFromCart
     const [cartItemNum, setCartItemNumb ] = useState(0);
     const [cartItems, setCartItems ] = useState([]);
     const login = useContext(DataContext).login;
     const setLogin = useContext(DataContext).setLogin;
-    console.log("login is : " + login)
+    /* console.log("login is : " + login) */
     const navigator = useNavigate();
     useEffect( () => {
         
@@ -27,6 +28,10 @@ export default function ({toggleSearch, toggleMbNav }) {
     }, [cart, cartItems])
     const bannerRef = useRef(null);
     const headerRef = useRef(null);
+    const headertxt = useContext(LangContext).header;
+    useEffect(() => {
+      /*   console.log(headertxt) */
+    }, [headertxt])
     /* useEffect(() => {
         const handleScroll = () => {
           const scrollY = window.scrollY || document.documentElement.scrollTop;
@@ -108,9 +113,9 @@ export default function ({toggleSearch, toggleMbNav }) {
            <SvgMenu toggle={toggleMbNav}  className="header-sm-sc"/>
                 <ul className="header-content header-bg-sc">
                       
-                        <li> <Link to='/'>HOME</Link> </li>
+                        <li> <Link to='/uploadProduct'>{headertxt?.header?.home}</Link> </li>
                         <li>
-                            <a>CATEGORIES&nbsp;&nbsp;</a> <DownArrow />
+                            <a>{headertxt?.header?.categories.title}&nbsp;&nbsp;</a> <DownArrow />
                             <ul>
                                 <li>
                                     <a>BEYOUTY</a> <RightArrow />
@@ -245,15 +250,15 @@ export default function ({toggleSearch, toggleMbNav }) {
                                 </li>
                             </ul>
                         </li>
-                        <li><Link to='/shope'>SHOP</Link></li>
-                        <li><Link to='/insights'>INSIGHTS</Link></li>
-                        <li><Link to="/offers">OFFERS</Link></li>
+                        <li><Link to='/shope'>{headertxt?.header?.shop}</Link></li>
+                        <li><Link to='/insights'>{headertxt?.header?.insights}</Link></li>
+                        <li><Link to="/offers">{headertxt?.header?.offers}</Link></li>
                 </ul>
                 <img style={{alignSelf: 'center', maxHeight: '40px'}} src={Image} />
                 <ul className='header-content header-bg-sc'>
-                <li> <Link to='about'>WHO WE ARE</Link>  </li>
-                <li><Link to='/water'>WATER SOMMELIER</Link>   </li>
-                <li>   <Link  to='/lounge'>EXECUTIVE LOUNG</Link>   </li>
+                <li> <Link to='about'>{headertxt?.header?.who_we_are}</Link>  </li>
+                <li><Link to='/water'>{headertxt?.header?.water_sommelier}</Link>   </li>
+                <li>   <Link  to='/lounge'>{headertxt?.header?.executive_lounge}</Link>   </li>
                 </ul>
                 <div className='header-icons'>
                     <img src={ICON3} onClick={toggleSearch} className='header-bg-sc' />

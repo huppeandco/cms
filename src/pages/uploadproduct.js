@@ -8,23 +8,25 @@ const headers = {
     'Authorization': `Bearer ${apiKey}`,
     'Content-Type': 'multipart/form-data'
   }; */
-  const cats = ['YOUNGSTER','well-being', 'mixologist', 'gensis-well','mom-club','leaves-beans','functional-drinks','essentials', 'be-youty', 'b-helthy'];
+export const cats = ['YOUNGSTER', 'well-being', 'mixologist', 'gensis-well', 'mom-club', 'leaves-beans', 'functional-drinks', 'essentials', 'be-youty', 'b-helthy'];
 
-function ImageUpload() {
+function ImageUpload({row}) {
     const [file, setFile] = useState(null);
     const [imageUrl, setImageUrl] = useState('');
-    const [errorMsg, setErrMsg ] = useState('');
-    const [txt, setTxt ] = useState('');
+    const [errorMsg, setErrMsg] = useState('');
+    const [txt, setTxt] = useState('');
     const [loader, setLoader] = useState(false);
     const [category, setCategory] = useState('')
     const [values, setValues] = useState({
-        price: '',
-        name: '',
-        rating: '',
-        quantity: '',
+        price: row[5],
+        name: row[0],
+        rating: row[1],
+        quantity: row[2],
         description: '',
         category: ''
-      });
+    });
+    const [newArrival, setNewArrival] = useState(false);
+    const [exectiveLounge, setExective] = useState(false);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -35,64 +37,66 @@ function ImageUpload() {
             setImageUrl(reader.result);
         };
     };
-    
+
     useEffect(() => {
         setImageUrl(file);
-        
+        console.log(file)
     }, [file])
 
-    
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setValues((prevValues) => ({
-          ...prevValues,
-          [name]: value,
+            ...prevValues,
+            [name]: value,
         }));
-      };
+    };
 
 
-      const handleUploadImage = async () => {
+    const handleUploadImage = async () => {
         const formData = new FormData();
-         formData.append('image', file);
+        formData.append('image', file);
         try {
-            
-            const response = await axios.post('https://thehydrologist.com/post-img.php', formData);
+
+            const response = await axios.post('https://thehydrologist.com/api/post-img.php', formData);
             setTxt('→ image upload success');
+            console.log(response.data)
             return response.data;
-          
-          } catch (error) {
+        } catch (error) {
             console.error(error);
-        
+
             setTxt('failed small time')
         }
-        
+
     };
 
 
     const handleUploadData = async (uploadedImageUrl) => {
-        let price = values.price + ' AED'
+        let price = values.price
         const formData = new FormData();
         formData.append('price', price);
         formData.append('name', values.name);
-        formData.append('imageurl', uploadedImageUrl); 
+        formData.append('imageurl', uploadedImageUrl);
         formData.append('rating', values.rating);
         formData.append('quantity', values.quantity);
         formData.append('description', values.description);
         formData.append('category', category);
+        formData.append('newArrival', newArrival);
+        formData.append('exctLoung', exectiveLounge);
 
         try {
             const response = await axios.post('https://thehydrologist.com/post-product.php', formData);
-           
-        } catch (error){
-            console.error(error); 
+
+        } catch (error) {
+            console.error(error);
             setTxt('failed small time')
         }
     }
 
     const handleUploadAll = async () => {
         setLoader(true);
-        if(file == ''  || values.name == '' || values.price == '' ||  category == '') {
+        if (file == '' || values.name == '' || values.price == '' || category == '') {
             setErrMsg('please fill the neccerry fields before');
             setLoader(false);
             return;
@@ -111,9 +115,9 @@ function ImageUpload() {
                     quantity: '',
                     description: '',
                     category: ''
-                  });
-                  setCategory('')
-                  setFile('')
+                });
+                setCategory('')
+                setFile('')
 
                 // Both image and data have been uploaded successfully
             } else {
@@ -125,39 +129,51 @@ function ImageUpload() {
             setTxt('failed big time');
         }
     }
+    useEffect(() => {
+        console.log(row);
+    }, []) 
 
     return (
-        <div className='upload-page' style={{width: '100%', display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'center', paddingRight: '5vw'}}>
-            {loader && <div className='upload-page-loader' > 
-            <div class="spinner-loader"></div>
+        <div className='upload-page' style={{ width: '100%', display: 'flex', flexDirection: 'row-reverse', alignItems: 'center', justifyContent: 'center', paddingRight: '5vw' }}>
+            {loader && <div className='upload-page-loader' >
+                <div class="spinner-loader"></div>
             </div>}
-            <div  style={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-            <input type='number' name='price' placeholder='priece' onChange={handleInputChange} value={values.price}/>
-            <input  type='text' name='name' placeholder='product name' onChange={handleInputChange} value={values.name} />
-            <input  type='number' placeholder='rating' max={5} name='rating' onChange={handleInputChange} value={values.rating} />
-            <input  type='number' placeholder='quantity' name='quantity' onChange={handleInputChange} value={values.quantity} />
-            <textarea style={{width: '50%', height: 100 ,margin: 10}} placeholder='enter a description ....' type='text' name='description' onChange={handleInputChange} value={values.description} />
-            <h4>choose category for product: </h4>
-            <div className='upload-product-cats' style={{display: 'flex', flexWrap: 'wrap', width: '80%', marginBottom: '2rem'}}>
-                {
-                    cats.map((cat) => {
-                        return (
-                            <button onClick={() => setCategory(cat)} className={`${category == `${cat}` ? 'active': ''}`}>{cat}</button>
-                            
-                        )
-                    }) 
-                }
-               
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <input type='number' name='price' placeholder='priece' onChange={handleInputChange} value={values.price} />
+                <input type='text' name='name' placeholder='product name' onChange={handleInputChange} value={values.name} />
+                <input type='number' placeholder='rating' max={5} name='rating' onChange={handleInputChange} value={values.rating} />
+                <input type='number' placeholder='quantity' name='quantity' onChange={handleInputChange} value={values.quantity} />
+                <label style={{ display: 'flex', alignItems: 'center', width: '80%', justifyContent: 'flex-start' }}>
+                    <input type='checkbox' value={newArrival} onChange={() => {setNewArrival(!newArrival); console.log(newArrival)}} />
+                    <h4 style={{ width: '100%', textAlign: 'left' }}> New Arriaval</h4>
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', width: '80%', justifyContent: 'flex-start' }}>
+                    <input  type='checkbox' value={exectiveLounge} onChange={() => setExective(!exectiveLounge)} />
+                    <h4 style={{ width: '100%', textAlign: 'left' }}>Exective lounge product</h4>
+                </label>
+
+                <textarea style={{ width: '50%', height: 100, margin: 10 }} placeholder='enter a description ....' type='text' name='description' onChange={handleInputChange} value={values.description} />
+                <h4>choose category for product: </h4>
+                <div className='upload-product-cats' style={{ display: 'flex', flexWrap: 'wrap', width: '80%', marginBottom: '2rem' }}>
+                    {
+                        cats.map((cat) => {
+                            return (
+                                <button onClick={() => setCategory(cat)} className={`${category == `${cat}` ? 'active' : ''}`}>{cat}</button>
+
+                            )
+                        })
+                    }
+
+                </div>
             </div>
-            </div>
-            <div  style={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}> 
-                <p style={{color: 'red'}}>{errorMsg}</p>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <p style={{ color: 'red' }}>{errorMsg}</p>
                 <div >
                     <input type="file" onChange={handleFileChange} />
                     {imageUrl && (
                         <div>
-                            
-                            <img style={{width: 100, height: 'auto'}} src={imageUrl} alt="Uploaded" />
+
+                            <img style={{ width: 100, height: 'auto' }} src={imageUrl} alt="Uploaded" />
                         </div>
                     )}
                     <p>{txt}</p>

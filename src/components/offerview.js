@@ -1,7 +1,7 @@
 import '../css/component.css';
 import imageOne from '../assets/offers/banner-1.jpeg'
 import imageTwo from '../assets/offers/banner-2-1.jpeg'
-import { OfferComponent } from './widgets';
+import { EditIcon, OfferComponent } from './widgets';
 
 const offers = [
     {limited: true, title: 'SUMMER HYDRATION', desc: '', footer: 'NATRL WATER 10L', priece: 'AED63.00', image: imageOne, type: 'get'},
@@ -10,6 +10,7 @@ const offers = [
 function OfferView () {
     return (
         <div className='offer-view'>
+           
             {offers.map ((offer, index) => {
                 return (
                     <OfferComponent key={index} title={offer.title} 
@@ -22,7 +23,9 @@ function OfferView () {
                                     />
                 )
             })}
-            
+            <div style={{cursor: 'pointer'}}>
+             <EditIcon />
+            </div>
         </div>
     )
 }

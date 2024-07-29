@@ -4,6 +4,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-top: 75px;
   }
   
   .home-swiper {
@@ -22,7 +23,7 @@
     bottom: 0;
     width: 100%;
     transform: translateX(100%);
-    transition: all .3s ease-in-out;
+    transition: all .5s ease-in-out;
     background-position: center center;
     background-repeat: no-repeat;
     background-position: center left;
@@ -103,11 +104,13 @@
     width: 100%;
     text-align: start;
     transition: all .8s ease-in-out;
+   
   }
  
   .slider h4, .slider p {
     transform: translateY(150px);
     opacity: 0;
+    animation-delay: 500ms;
   }
   .slider.active h4, .slider.active p {
     transform: translateY(0px);
@@ -133,7 +136,8 @@
     padding-block: 1rem;
     border-radius: 4px;
     transition: all .5s ease-in-out;
-    transition-delay: 500ms
+    transition-delay: 500ms;
+    animation: handshake 2.5s cubic-bezier(.445,.05,.55,.95) 50;
   }
 
 

@@ -5,13 +5,16 @@ import App from './App';
 import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import DataProvider from './data';
+import LangProvider from './data/lang';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename='/cms'>
       <DataProvider>
-        <App />
+        <LangProvider>
+          <App />
+        </LangProvider>
       </DataProvider>
     </BrowserRouter>
   </React.StrictMode>

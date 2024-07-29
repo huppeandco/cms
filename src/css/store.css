@@ -239,7 +239,7 @@
 
 
 .actions-wrapper div:active {
-    filter: invert();
+    transform: translateX(-65px) scale(.4) !important;
 }
 
 @media (min-width: 1200px) {

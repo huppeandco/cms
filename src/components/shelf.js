@@ -33,7 +33,7 @@ import 'swiper/css';
 import DraggableSlider from './slider';
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-const cats = ['YOUNGSTER', 'well-being', 'mixologist', 'gensis-well', 'mom-club', 'leaves-beans', 'functional-drinks', 'essentials', 'be-youty', 'b-helthy'];
+const cats = ['YOUNGSTER', 'well-being', 'mixologist', 'gensis-well', 'mom-club', 'leaves-beans', 'functional-drinks', 'essentials', 'be-youty', 'B-HEALTHY'];
 /* const imgs = [
     { img: Image1, type: 'mixologist' },
     { img: Image2, type: 'mixologist' },
